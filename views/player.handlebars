@@ -1,0 +1,71 @@
+<h3>Add new people:</h3>
+<form id="addperson" action="/player" method="post">
+    First name: <input type="text" name="fname"><br>
+    Last name: <input type="text" name="lname"><br>
+    Team: <select name="team"> 
+        {{#each teams}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+    </select><br>
+    Age: <input type="number" name="age"><br>
+    Games Played: <input type="number" name="games_played"><br>
+    Plate Appearances: <input type="number" name="plate_appearances"><br>
+    At Bats: <input type="number" name="at_bats"><br>
+    Hits: <input type="number" name="hits"><br>
+    Doubles: <input type="number" name="doubles"><br>
+    Triples: <input type="number" name="triples"><br>
+    Home Runs: <input type="number" name="home_runs"><br>
+    Runs: <input type="number" name="runs"><br>
+    RBIs: <input type="number" name="rbis"><br>
+    Strikeouts: <input type="number" name="strikeouts"><br>
+    Walks: <input type="number" name="walks"><br>
+    Position: <input type="text" name="position"><br>
+    <input type="submit" value="Submit">
+ </form>
+<br/>
+
+<h3>Current people:</h3>
+<table>
+    <thead> 
+        <th>First Name</th> 
+        <th>Last Name</th> 
+        <th>Team</th>
+        <th>Age</th>
+        <th>Games Played</th>
+        <th>Plate Appearances</th>
+        <th>At Bats</th>
+        <th>Hits</th>
+        <th>Doubles</th>
+        <th>Triples</th>
+        <th>Home Runs</th>
+        <th>Runs</th>
+        <th>RBIs</th>
+        <th>Strikeouts</th>
+        <th>Walks</th>
+        <th>Position</th>  
+    </thead> 
+    <tbody>
+        {{#each players}} 
+        <tr> 
+            <td>{{fname}}</td> 
+            <td>{{lname}}</td> 
+            <td>{{team}}</td> 
+            <td>{{age}}</td>
+            <td>{{games_played}}</td>
+            <td>{{plate_appearances}}</td>
+            <td>{{at_bats}}</td>
+            <td>{{hits}}</td>
+            <td>{{doubles}}</td>
+            <td>{{triples}}</td>
+            <td>{{home_runs}}</td>
+            <td>{{runs}}</td>
+            <td>{{rbis}}</td>
+            <td>{{strikeouts}}</td>
+            <td>{{walks}}</td>
+            <td>{{position}}</td>            
+            <td><button onclick="deletePerson({{id}})">Delete</button></td>
+            <td><a href="/people/{{id}}">Update</a></td>
+        </tr> 
+        {{/each}} 
+    </tbody> 
+</table>
