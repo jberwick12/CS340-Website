@@ -1,0 +1,26 @@
+<h3>Add New League:</h3>
+<form id="addperson" action="/league" method="post">
+    Name: <input type="text" name="name"><br>
+    Designated Hitter: <select name="dh">
+        <option value="1">True</option>
+        <option value="0">False</option>
+    </select><br>
+    <input type="submit" value="Submit">
+ </form>
+<br/>
+
+<h3>Current Leagues:</h3>
+<table border="1">
+    <thead> 
+        <th>Name</th> 
+        <th>Designated Hitter</th>   
+    </thead> 
+    <tbody>
+        {{#each leagues}} 
+        <tr> 
+            <td>{{name}}</td> 
+            <td>{{dh}}</td> 
+        </tr> 
+        {{/each}} 
+    </tbody> 
+</table>

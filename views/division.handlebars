@@ -1,0 +1,28 @@
+<h3>Add New Division:</h3>
+<form id="addperson" action="/division" method="post">
+    Region: <input type="text" name="region"><br>
+    Team: <select name="league">
+        <option value="">No League</option>
+        {{#each leagues}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+    </select><br>
+    <input type="submit" value="Submit">
+ </form>
+<br/>
+
+<h3>Current Divisions:</h3>
+<table border="1">
+    <thead> 
+        <th>Region</th> 
+        <th>League</th>   
+    </thead> 
+    <tbody>
+        {{#each divisions}} 
+        <tr> 
+            <td>{{region}}</td> 
+            <td>{{league}}</td> 
+        </tr> 
+        {{/each}} 
+    </tbody> 
+</table>

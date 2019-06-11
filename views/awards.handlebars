@@ -1,0 +1,20 @@
+<h3>Add New Award:</h3>
+<form id="addperson" action="/awards" method="post">
+    Award Name: <input type="text" name="name"><br>
+    <input type="submit" value="Submit">
+ </form>
+<br/>
+
+<h3>Current Awards:</h3>
+<table border="1">
+    <thead> 
+        <th>Name</th> 
+    </thead> 
+    <tbody>
+        {{#each awards}} 
+        <tr> 
+            <td>{{name}}</td>
+        </tr> 
+        {{/each}} 
+    </tbody> 
+</table>

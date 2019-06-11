@@ -8,9 +8,9 @@ function deletePlayer(id){
     })
 };
 
-function deletePeopleCert(pid, cid){
+function deletePlayerAward(pid,aid){
   $.ajax({
-      url: '/people_certs/pid/' + pid + '/cert/' + cid,
+      url: '/player_award/pid/' + pid + '/aid/' + aid,
       type: 'DELETE',
       success: function(result){
           if(result.responseText != undefined){

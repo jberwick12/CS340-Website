@@ -18,17 +18,16 @@ module.exports = function(){
     /*Display all people. Requires web based javascript to delete users with AJAX*/
 
     router.get('/', function(req, res){
-        var callbackCount = 0;
+        //var callbackCount = 0;
         var context = {};
         //context.jsscripts = ["deleteperson.js","filterpeople.js","searchpeople.js"];
         var mysql = req.app.get('mysql');
-        getPlayers(res, mysql, context, complete);
-        getTeams(res, mysql, context, complete);
+        getLeagues(res, mysql, context, complete);
         function complete(){
-            callbackCount++;
-            if(callbackCount >= 2){
-                res.render('league', context);
-            }
+            //callbackCount++;
+            //if(callbackCount >= 2){
+            res.render('league', context);
+            //}
 
         }
     });
@@ -40,7 +39,7 @@ module.exports = function(){
         //console.log(req.body.homeworld)
         //console.log(req.body)
         var mysql = req.app.get('mysql');
-        var sql = "INSERT INTO league (id, name, dh) VALUES (?,?,?)";
+        var sql = "INSERT INTO league (name, dh) VALUES (?,?)";
         var inserts = [req.body.name, req.body.dh];
         sql = mysql.pool.query(sql,inserts,function(error, results, fields){
             if(error){
@@ -52,3 +51,6 @@ module.exports = function(){
             }
         });
     });
+
+    return router;
+}();

@@ -12,6 +12,10 @@ app.set('view engine', 'handlebars');
 app.set('port', process.argv[2]);
 app.set('mysql', mysql);
 app.use('/player', require('./player.js'));
+app.use('/awards', require('./awards.js'));
+app.use('/division', require('./division.js'));
+app.use('/league', require('./league.js'));
+app.use('/player_award', require('./player_award.js'));
 app.use('/', express.static('public'));
 
 app.use(function(req,res){

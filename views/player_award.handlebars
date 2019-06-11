@@ -1,0 +1,32 @@
+<h3>Add New Player Award:</h3>
+<form id="addperson" action="/player_award" method="post">
+    Player: <select name="player">
+        {{#each players}}
+        <option value="{{id}}">{{fname}} {{lname}}</option>
+        {{/each}}
+    </select><br>
+    Award: <select name="award">
+        {{#each awards}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+    </select><br>
+    <input type="submit" value="Submit">
+ </form>
+<br/>
+
+<h3>Current Player Awards:</h3>
+<table border="1">
+    <thead> 
+        <th>Player</th> 
+        <th>Award</th> 
+    </thead> 
+    <tbody>
+        {{#each player_award}} 
+        <tr> 
+            <td>{{fname}} {{lname}}</td> 
+            <td>{{Award}}</td> 
+            <td><button onclick="deletePlayerAward({{pid}},{{aid}})">Delete</button></td>
+        </tr> 
+        {{/each}} 
+    </tbody> 
+</table>
