@@ -1,8 +1,9 @@
-<h3>Add new people:</h3>
+<h3>Add new player:</h3>
 <form id="addperson" action="/player" method="post">
     First name: <input type="text" name="fname"><br>
     Last name: <input type="text" name="lname"><br>
-    Team: <select name="team"> 
+    Team: <select name="team">
+        <option value="">No Team</option>
         {{#each teams}}
         <option value="{{id}}">{{name}}</option>
         {{/each}}
@@ -24,8 +25,26 @@
  </form>
 <br/>
 
-<h3>Current people:</h3>
-<table>
+<form id='filter_people' action='' method=''>
+<!--- this form does not submit directly, the button handles all the interaction with backend -->
+    <label> Filter by Team: </label>
+    <select id='team_filter' name="team">
+        {{#each teams}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+    </select><br>
+    <input type="button" value="Filter" onclick="filterPlayerByTeam()">
+</form>
+
+<form id='search_people' action='' method=''>
+<!--- this form does not submit directly, the button handles all the interaction with backend -->
+    <label> Search players for first name starting with:</label>
+    <input id='first_name_search_string' type='text' name='first_name_search_string' value=''>
+    <input type="button" value="Search" onclick="searchPlayerByFirstName()">
+</form>
+
+<h3>Current players:</h3>
+<table border="1">
     <thead> 
         <th>First Name</th> 
         <th>Last Name</th> 
@@ -63,8 +82,8 @@
             <td>{{strikeouts}}</td>
             <td>{{walks}}</td>
             <td>{{position}}</td>            
-            <td><button onclick="deletePerson({{id}})">Delete</button></td>
-            <td><a href="/people/{{id}}">Update</a></td>
+            <td><button onclick="deletePlayer({{id}})">Delete</button></td>
+            <td><a href="/player/{{id}}">Update</a></td>
         </tr> 
         {{/each}} 
     </tbody> 

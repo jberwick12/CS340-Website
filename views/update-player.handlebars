@@ -1,0 +1,26 @@
+<h1>Update {{player.fname}} {{player.lname}}:</h1>
+<form id="update-player" action="/player" method="post">
+    First name: <input type="text" name="fname" value="{{player.fname}}"><br>
+    Last name: <input type="text" name="lname" value="{{player.lname}}"><br>
+    Team: <select name="team" id="team-selector">
+        <option value="">No Team</option>
+        {{#each teams}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+    </select><br>
+    Age: <input type="number" name="age" value="{{player.age}}"><br>
+    Games Played: <input type="number" name="games_played" value="{{player.games_played}}"><br>
+    Plate Appearances: <input type="number" name="plate_appearances" value="{{player.plate_appearances}}"><br>
+    At Bats: <input type="number" name="at_bats" value="{{player.at_bats}}"><br>
+    Hits: <input type="number" name="hits" value="{{player.hits}}"><br>
+    Doubles: <input type="number" name="doubles" value="{{player.doubles}}"><br>
+    Triples: <input type="number" name="triples" value="{{player.triples}}"><br>
+    Home Runs: <input type="number" name="home_runs" value="{{player.home_runs}}"><br>
+    Runs: <input type="number" name="runs" value="{{player.runs}}"><br>
+    RBIs: <input type="number" name="rbis" value="{{player.rbis}}"><br>
+    Strikeouts: <input type="number" name="strikeouts" value="{{player.strikeouts}}"><br>
+    Walks: <input type="number" name="walks" value="{{player.walks}}"><br>
+    Position: <input type="text" name="position" value="{{player.position}}"><br>
+</form>
+<button onclick="updatePlayer({{player.id}})">Update</button>
+<script defer>selectTeam({{player.team_id}});</script>

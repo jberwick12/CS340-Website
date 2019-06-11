@@ -14,7 +14,7 @@ module.exports = function(){
     }
 
     function getPlayers(res, mysql, context, complete){
-        mysql.pool.query("SELECT player.id as id, fname, lname, team.name as team, age, games_played, plate_appearances, at_bats, hits, doubles, triples, home_runs, runs, rbis, strikeouts, walks, position FROM player INNER JOIN team ON team_id = team.id", function(error, results, fields){
+        mysql.pool.query("SELECT player.id as id, fname, lname, team.name as team, age, games_played, plate_appearances, at_bats, hits, doubles, triples, home_runs, runs, rbis, strikeouts, walks, position FROM player LEFT JOIN team ON team_id = team.id", function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
                 res.end();
@@ -24,24 +24,24 @@ module.exports = function(){
         });
     }
 
-    function getPeoplebyHomeworld(req, res, mysql, context, complete){
-      var query = "SELECT bsg_people.character_id as id, fname, lname, bsg_planets.name AS homeworld, age FROM bsg_people INNER JOIN bsg_planets ON homeworld = bsg_planets.planet_id WHERE bsg_people.homeworld = ?";
+    function getPlayerbyTeam(req, res, mysql, context, complete){
+      var query = "SELECT player.id as id, fname, lname, team.name as team, age, games_played, plate_appearances, at_bats, hits, doubles, triples, home_runs, runs, rbis, strikeouts, walks, position FROM player INNER JOIN team ON team_id = team.id WHERE team_id = ?";
       console.log(req.params)
-      var inserts = [req.params.homeworld]
+      var inserts = [req.params.team]
       mysql.pool.query(query, inserts, function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
                 res.end();
             }
-            context.people = results;
+            context.players = results;
             complete();
         });
     }
 
     /* Find people whose fname starts with a given string in the req */
-    function getPeopleWithNameLike(req, res, mysql, context, complete) {
+    function getPlayerWithNameLike(req, res, mysql, context, complete) {
       //sanitize the input as well as include the % character
-       var query = "SELECT bsg_people.character_id as id, fname, lname, bsg_planets.name AS homeworld, age FROM bsg_people INNER JOIN bsg_planets ON homeworld = bsg_planets.planet_id WHERE bsg_people.fname LIKE " + mysql.pool.escape(req.params.s + '%');
+       var query = "SELECT player.id as id, fname, lname, team.name as team, age, games_played, plate_appearances, at_bats, hits, doubles, triples, home_runs, runs, rbis, strikeouts, walks, position FROM player LEFT JOIN team ON team_id = team.id WHERE fname LIKE " + mysql.pool.escape(req.params.s + '%');
       console.log(query)
 
       mysql.pool.query(query, function(error, results, fields){
@@ -49,20 +49,20 @@ module.exports = function(){
                 res.write(JSON.stringify(error));
                 res.end();
             }
-            context.people = results;
+            context.players = results;
             complete();
         });
     }
 
-    function getPerson(res, mysql, context, id, complete){
-        var sql = "SELECT character_id as id, fname, lname, homeworld, age FROM bsg_people WHERE character_id = ?";
+    function getPlayer(res, mysql, context, id, complete){
+        var sql = "SELECT player.id as id, fname, lname, team.name as team, age, games_played, plate_appearances, at_bats, hits, doubles, triples, home_runs, runs, rbis, strikeouts, walks, position, team_id FROM player LEFT JOIN team ON team_id = team.id WHERE player.id = ?";
         var inserts = [id];
         mysql.pool.query(sql, inserts, function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
                 res.end();
             }
-            context.person = results[0];
+            context.player = results[0];
             complete();
         });
     }
@@ -72,7 +72,7 @@ module.exports = function(){
     router.get('/', function(req, res){
         var callbackCount = 0;
         var context = {};
-        //context.jsscripts = ["deleteperson.js","filterpeople.js","searchpeople.js"];
+        context.jsscripts = ["deleteplayer.js","filterplayer.js","searchplayer.js"];
         var mysql = req.app.get('mysql');
         getPlayers(res, mysql, context, complete);
         getTeams(res, mysql, context, complete);
@@ -86,17 +86,17 @@ module.exports = function(){
     });
 
     /*Display all people from a given homeworld. Requires web based javascript to delete users with AJAX*/
-    router.get('/filter/:homeworld', function(req, res){
+    router.get('/filter/:team', function(req, res){
         var callbackCount = 0;
         var context = {};
-        context.jsscripts = ["deleteperson.js","filterpeople.js","searchpeople.js"];
+        context.jsscripts = ["deleteplayer.js","filterplayer.js","searchplayer.js"];
         var mysql = req.app.get('mysql');
-        getPeoplebyHomeworld(req,res, mysql, context, complete);
-        getPlanets(res, mysql, context, complete);
+        getPlayerbyTeam(req,res, mysql, context, complete);
+        getTeams(res, mysql, context, complete);
         function complete(){
             callbackCount++;
             if(callbackCount >= 2){
-                res.render('people', context);
+                res.render('player', context);
             }
 
         }
@@ -106,35 +106,46 @@ module.exports = function(){
     router.get('/search/:s', function(req, res){
         var callbackCount = 0;
         var context = {};
-        context.jsscripts = ["deleteperson.js","filterpeople.js","searchpeople.js"];
+        context.jsscripts = ["deleteplayer.js","filterplayer.js","searchplayer.js"];
         var mysql = req.app.get('mysql');
-        getPeopleWithNameLike(req, res, mysql, context, complete);
-        getPlanets(res, mysql, context, complete);
+        getPlayerWithNameLike(req, res, mysql, context, complete);
+        getTeams(res, mysql, context, complete);
         function complete(){
             callbackCount++;
             if(callbackCount >= 2){
-                res.render('people', context);
+                res.render('player', context);
             }
         }
     });
 
     /* Display one person for the specific purpose of updating people */
 
-    router.get('/:id', function(req, res){
+    router.get('/:pid', function(req, res){
+        console.log(req.params.pid)
+        //wait(10000)
         callbackCount = 0;
         var context = {};
-        context.jsscripts = ["selectedplanet.js", "updateperson.js"];
+        context.jsscripts = ["selectedteam.js", "updateplayer.js"];
         var mysql = req.app.get('mysql');
-        getPerson(res, mysql, context, req.params.id, complete);
-        getPlanets(res, mysql, context, complete);
+        getPlayer(res, mysql, context, req.params.pid, complete);
+        getTeams(res, mysql, context, complete);
         function complete(){
             callbackCount++;
             if(callbackCount >= 2){
-                res.render('update-person', context);
+                res.render('update-player', context);
             }
 
         }
     });
+
+
+    function wait(ms){
+        var start = new Date().getTime();
+        var end = start;
+        while(end < start + ms) {
+          end = new Date().getTime();
+       }
+     }
 
     /* Adds a person, redirects to the people page after adding */
 
@@ -161,8 +172,8 @@ module.exports = function(){
         var mysql = req.app.get('mysql');
         console.log(req.body)
         console.log(req.params.id)
-        var sql = "UPDATE bsg_people SET fname=?, lname=?, homeworld=?, age=? WHERE character_id=?";
-        var inserts = [req.body.fname, req.body.lname, req.body.homeworld, req.body.age, req.params.id];
+        var sql = "UPDATE player SET fname=?, lname=?, team_id=?, age=?, games_played=?, plate_appearances=?, at_bats=?, hits=?, doubles=?, triples=?, home_runs=?, runs=?, rbis=?, strikeouts=?, walks=?, position=? WHERE id=?";
+        var inserts = [req.body.fname, req.body.lname, req.body.team, req.body.age, req.body.games_played, req.body.plate_appearances, req.body.at_bats, req.body.hits, req.body.doubles, req.body.triples, req.body.home_runs, req.body.runs, req.body.rbis, req.body.strikeouts, req.body.walks, req.body.position, req.params.id];
         sql = mysql.pool.query(sql,inserts,function(error, results, fields){
             if(error){
                 console.log(error)
@@ -178,8 +189,9 @@ module.exports = function(){
     /* Route to delete a person, simply returns a 202 upon success. Ajax will handle this. */
 
     router.delete('/:id', function(req, res){
+        console.log(req.params.id)
         var mysql = req.app.get('mysql');
-        var sql = "DELETE FROM bsg_people WHERE character_id = ?";
+        var sql = "DELETE FROM player WHERE id = ?";
         var inserts = [req.params.id];
         sql = mysql.pool.query(sql, inserts, function(error, results, fields){
             if(error){
